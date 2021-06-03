@@ -27,9 +27,9 @@ from sklearn.decomposition import PCA
 # https://pl.wikipedia.org/wiki/Analiza_g%C5%82%C3%B3wnych_sk%C5%82adowych
 
 
-num_features = 1000
+num_features = 100
 
-pca = PCA(n_components=100)
+pca = PCA(n_components=num_features)  # TODO sprawdzic inne parametry tego
 # pca.fit(X_train)
 # print(pca.explained_variance_ratio_)
 
