@@ -46,5 +46,5 @@ from sklearn.metrics import classification_report
 
 y_pred = anova_svm.predict(X_val)
 print(f'Report: {classification_report(Y_val, y_pred)}')
-print(f'Score: {balanced_accuracy_score(Y_val, y_pred)}')  # 0.982
-print(f'Features: {num_features}')  # 1000
+print(f'Score: {balanced_accuracy_score(Y_val, y_pred)}')  # 0.958
+print(f'Features: {num_features}')  # 100
