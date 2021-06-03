@@ -34,6 +34,8 @@ clf = LinearSVC()
 anova_svm = make_pipeline(variance_filter, anova_filter, clf)
 anova_svm.fit(X_train, Y_train)
 
+# anova_svm[-1].coef_
+
 from sklearn.metrics import classification_report
 
 y_pred = anova_svm.predict(X_val)

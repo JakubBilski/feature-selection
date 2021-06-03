@@ -20,6 +20,7 @@ Y_val = np.ravel(Y_val)
 from sklearn.feature_selection import SelectKBest, f_classif, VarianceThreshold, chi2
 from sklearn.pipeline import make_pipeline
 from sklearn.svm import LinearSVC
+from sklearn.metrics import classification_report
 
 num_features = 1000
 
@@ -29,9 +30,8 @@ clf = LinearSVC()
 anova_svm = make_pipeline(variance_filter, anova_filter, clf)
 anova_svm.fit(X_train, Y_train)
 
-from sklearn.metrics import classification_report
-
 y_pred = anova_svm.predict(X_val)
 print(f'Report: {classification_report(Y_val, y_pred)}')
 print(f'Score: {balanced_accuracy_score(Y_val, y_pred)}')  # 0.9766
 print(f'Features: {num_features}')  # 1000
+
