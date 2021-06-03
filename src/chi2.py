@@ -17,21 +17,47 @@ Y_train = np.ravel(Y_train)
 Y_val = np.ravel(Y_val)
 
 
+from sklearn.feature_selection import SelectFromModel
 from sklearn.feature_selection import SelectKBest, f_classif, VarianceThreshold, chi2
 from sklearn.pipeline import make_pipeline
 from sklearn.svm import LinearSVC
 from sklearn.metrics import classification_report
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import ElasticNet
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neural_network import MLPClassifier
+
+# --------------------------------------------
+# chi2
 
 num_features = 1000
 
 variance_filter = VarianceThreshold()
-anova_filter = SelectKBest(chi2, k=1000)
+filter = SelectKBest(chi2, k=1000)
 clf = LinearSVC()
-anova_svm = make_pipeline(variance_filter, anova_filter, clf)
-anova_svm.fit(X_train, Y_train)
+model = make_pipeline(variance_filter, filter, clf)
+model.fit(X_train, Y_train)
 
-y_pred = anova_svm.predict(X_val)
+y_pred = model.predict(X_val)
 print(f'Report: {classification_report(Y_val, y_pred)}')
 print(f'Score: {balanced_accuracy_score(Y_val, y_pred)}')  # 0.9766
+print(f'Features: {num_features}')  # 1000
+
+
+# --------------------------------------------
+# lda
+
+num_features = 1000
+
+variance_filter = VarianceThreshold()
+filter = LinearDiscriminantAnalysis()
+clf = LinearSVC()
+model = make_pipeline(variance_filter, filter, clf)
+model.fit(X_train, Y_train)
+
+y_pred = model.predict(X_val)
+print(f'Report: {classification_report(Y_val, y_pred)}')
+print(f'Score: {balanced_accuracy_score(Y_val, y_pred)}')  # 0.776
 print(f'Features: {num_features}')  # 1000
 
