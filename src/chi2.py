@@ -1,6 +1,3 @@
-from sklearn import set_config
-set_config(display='diagram')  # nwm co to jest
-
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split

@@ -35,7 +35,6 @@ pca = PCA(n_components=num_features)  # TODO sprawdzic inne parametry tego
 
 
 variance_filter = VarianceThreshold()
-# anova_filter = SelectKBest(f_classif, k=1000)
 clf = LinearSVC()
 anova_svm = make_pipeline(variance_filter, pca, clf)
 anova_svm.fit(X_train, Y_train)
