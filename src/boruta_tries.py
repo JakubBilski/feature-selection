@@ -48,3 +48,10 @@ forest.fit(X_tr, Y_train)
 X_tr = boruta.transform(np.array(X_val), weak=True)
 print(f'score: {forest.score(X_tr, Y_val)}')  # 0.974
 print(f'features: {len(green_area)+len(blue_area)}')  # 1150
+
+def boruta_get_support():
+   s = list(boruta.support_)
+   s.extend(boruta.support_weak_)
+   return s
+
+boruta.get_support = boruta_get_support
