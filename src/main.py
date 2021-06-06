@@ -12,10 +12,11 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.metrics import balanced_accuracy_score
 from sklearn.linear_model import ElasticNet
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
 
 
 def get_clf():
-    return LinearDiscriminantAnalysis ()
+    return RandomForestClassifier ()
 
 
 def model_svm(num_features=100):
@@ -60,16 +61,17 @@ def model_lda(num_features=100):  # doesn't work
 
 data_name = 'digits'
 X = pd.read_csv(f"data/{data_name}_train.data", sep=' ', header=None)
-X = X.drop(columns=[5000])
+N = len(X.columns) - 1
+X = X.drop(columns=[N])
 Y = pd.read_csv(f"data/{data_name}_train.labels", sep=' ', header=None)
 X_test = pd.read_csv(f"data/{data_name}_valid.data", sep=' ', header=None)
-X_test = X_test.drop(columns=[5000])
+X_test = X_test.drop(columns=[N])
 X_train, X_val, Y_train, Y_val = train_test_split(X,Y, stratify=Y, random_state=42)
 Y_train = np.ravel(Y_train)
 # Y_train = (Y_train+1)//2  # not needed now
 Y_val = np.ravel(Y_val)
 # Y_val = (Y_val+1)//2  # not needed now
-N = 5000
+
 
 
 def test_model(model):
@@ -79,19 +81,23 @@ def test_model(model):
 
 
 fig, ax = plt.subplots()
-for model_f in [model_svm, model_pca, model_forest, model_chi2]:
+for model_f in [model_forest, model_svm]:
 # for model_f in [model_pca, model_forest, model_forest_pca]:
-    percentiles = list(np.linspace(95,100,20))
+    # percentiles = [-19]
+    percentiles = list(np.linspace(90,80,11))
 
     scores = []
     num_features = []
     for percentile in percentiles:
-        num = max(round(N*(100-percentile)/100),1)
+        if percentile < 0:
+            num = round(-percentile)
+        else:
+            num = max(round(N*(100-percentile)/100),1)
         model = model_f(num)
 
         scores.append(test_model(model))
         num_features.append(num)
-
+    print(scores)
     plt.plot(num_features, scores, label=str(model_f))
 
 ax.set_title("Accuracy based on number of features")
@@ -102,8 +108,8 @@ fig.show()
 
 
 def make_submission(model):
-    y_pred = model.predict_proba(X_test)
+    y_pred = model.predict_proba(X_test)[:,1]
     pd.DataFrame(y_pred).to_csv(f"JAKBRO_{data_name}_prediction.txt", sep=' ', header=False, index=False)
-    names = np.array(list(range(5000)))
+    names = np.array(list(range(N)))
     names = names[model[0].get_support()][model[1].get_support()]
     pd.DataFrame(names).to_csv(f"JAKBRO_{data_name}_features.txt", sep=' ', header=False, index=False)
